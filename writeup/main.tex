@@ -85,14 +85,49 @@
 \newpage
 
 \subsection{16:1 LUT Design}
+\subsubsection*{Schematic}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{writeup//figures/LUT_sch.png}
+    \caption{Enter Caption}
+\end{figure}
 
-
+\subsubsection*{Symbol}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{writeup//figures/LUT_sym.png}
+    \caption{Enter Caption}
+\end{figure}
 
 \newpage
 
 % ------------------ SECTION 2 ------------------
 \section{Baseline Design Validation and Logical Test}
 \subsection{Test Schematic and Case}
+\subsubsection*{Test Schematics}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{writeup//figures/muxsubtestschem.png}
+    \caption{Enter Caption}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{writeup//figures/luttestschem.png}
+    \caption{Enter Caption}
+\end{figure}
+
+\subsubsection*{Cases}
+For the 2:1 MUX validation, the input signals were configured to ensure that both selection paths could be distinctly verified. The data input \( I_1 \) was driven with a square wave transitioning from low to high, while \( I_0 \) was driven with an inverse square wave (high to low). The select line \( S \) was given a signal with \textbf{double the period} of the data inputs to allow for multiple transitions of \( I_0 \) and \( I_1 \) within each select cycle. 
+This setup ensures that during each half-period of \( S \), both data inputs experience a full logic transition, allowing the output to alternate between following \( I_0 \) and \( I_1 \) depending on the state of \( S \). 
+By measuring the output \( V_{\text{out}} \) and observing that it follows \( I_1 \) when \( S=1 \) and \( I_0 \) when \( S=0 \), the expected multiplexer behavior was confirmed. The corresponding transient waveform verified this switching behavior with minimal propagation delay between the input and output transitions.
+
+For the 16:1 LUT validation, a counter-type input pattern was applied to systematically generate all \( 2^4 = 16 \) address combinations. 
+Each address line was assigned a different pulse period to form a binary counting sequence: \( I_3 \) with a 2\,ns period, \( I_2 \) with 4\,ns, \( I_1 \) with 8\,ns, and \( I_0 \) with 16\,ns. This timing scheme ensures that over one full 16-state cycle, every unique combination from \( 0000 \) to \( 1111 \) is applied to the address inputs. All sixteen data inputs (\( \text{IN}_0 \) through \( \text{IN}_{15} \)) were driven with identical 8\,ns square waves to maintain consistent signal activity. 
+As the address counter advanced, the output \( V_{\text{out}} \) was observed to follow the corresponding data input for each address state, verifying correct selection logic and full LUT functionality.
+
+\subsection{Validation}
 \subsubsection*{2:1 MUX Subcircuit Validation}
 \begin{figure}[H]
     \centering
@@ -123,37 +158,38 @@ Specifically, when the address equals \(0000\), \(\text{IN}_0\) propagates to th
 Rising and falling edges on \(V_{\text{out}}\) coincide precisely with the selected input, while nonselected inputs show no coupling. 
 Because all address combinations were verified and the output correctly reflected the selected data input each time, the 16:1 LUT simulation confirms correct functionality.
 
-
-\newpage
-
-\subsection{Simulation Results}
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.5\linewidth]{writeup//figures/baseline_energy_val.png}
-    \caption{Enter Caption}
-\end{figure}
-
-
 \newpage
 
 % ------------------ SECTION 3 ------------------
 \section{Baseline Delay Measurement}
 \subsection{Test Schematic}
 
-
-
-\newpage
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{writeup//figures/lut_delay_testbench.png}
+    \caption{Enter Caption}
+\end{figure}
 
 \subsection{Test Case}
+To evaluate the worst-case propagation delay of the 16:1 LUT, the input configuration was chosen to isolate the longest signal path through the multiplexer tree. 
+Data inputs \(\text{IN}_0\) through \(\text{IN}_7\) were tied to ground (\(0\,\text{V}\)), while \(\text{IN}_8\) through \(\text{IN}_{15}\) were connected to \(V_{DD}\). 
+Separate ground and \(V_{DD}\) connections were provided for \(\text{IN}_0\) and \(\text{IN}_{15}\), since these represent the boundary input cases that the output \(V_{\text{out}}\) would follow depending on the address configuration under test. 
 
+The four address lines (\(I_0, I_1, I_2, I_3\)) were driven by \texttt{Vpulse} sources transitioning from low to high, generating the binary address sequence from \(0000\) to \(1111\). 
+Switching all address inputs from 0 to 1 allowed the LUT to traverse every possible address combination, ensuring that the output response was tested across the full range of input states. 
+This transition sequence also activates the critical switching path, as multiple internal MUX stages change simultaneously, causing maximum internal toggling and delay. 
+Because \(I_3\) acted as the least significant bit (LSB), the signal path corresponding to \(I_3\) produced the longest propagation path through the multiplexer hierarchy and thus determined the worst-case delay.
 
+At the output node, three NMOS transistors with widths of \(10\,\mu\text{m}\), \(10\,\mu\text{m}\), and \(4\,\mu\text{m}\) were connected in parallel to form an equivalent capacitive loading of approximately \(200C_g\). 
+Given the minimum device width of \(120\,\text{nm}\), a total effective width of \(24\,\mu\text{m}\) was required to achieve this load. 
+This output loading condition ensured realistic delay measurement under high fan-out, enabling accurate evaluation of the LUT’s timing performance in its worst-case switching scenario.
 
 \newpage
 
 \subsection{Simulation Results and Metric Value}
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.5\linewidth]{writeup//figures/baseline_delay_transient.png}
+    \includegraphics[width=0.5\linewidth]{writeup//figures/baselinedelay.png}
     \caption{Enter Caption}
 \end{figure}
 Propagation delay measurements are made at the 50\% voltage level of both the input and output signals, which corresponds to \( V = 0.5V_{DD} = 0.6\,\text{V} \) for a 1.2\,V supply.
@@ -204,6 +240,12 @@ Therefore, the \textbf{worst-case propagation delay} of the circuit is approxima
 \section{Baseline Frequency Measurement}
 \subsection{Test Schematic}
 
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{writeup//figures/lut_delay_testbench.png}
+    \caption{Enter Caption}
+\end{figure}
+We set the period of the Vpulse to be 1/f, where f is a variable that represents frequency. 
 
 
 \newpage
@@ -228,6 +270,11 @@ Therefore, the \textbf{worst-case propagation delay} of the circuit is approxima
 \section{Baseline Energy Measurement}
 \subsection{Test Schematic}
 
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.75\linewidth]{writeup//figures/lut_energy_testbench.png}
+    \caption{}
+\end{figure}
 
 
 \newpage
@@ -436,7 +483,11 @@ The rising-output path (\(t_{PLH}\)) dominates, so the PMOS pull-up path is the 
 
 \subsection{Simulation Results and Metric Value}
 
-
+\begin{figure}
+    \centering
+    \includegraphics[width=0.5\linewidth]{writeup//figures/max_frequencies_optimized.png}
+    \caption{Enter Caption}
+\end{figure}
 
 \newpage
 
