@@ -303,7 +303,79 @@ We set the period of the Vpulse to be 1/f, where f is a variable that represents
 % ------------------ SECTION 6 ------------------
 \section{Optimized Design}
 \subsection{Optimized Design Schematics}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{writeup//figures/inv_sch.png}
+    \caption{Enter Caption}
+\end{figure}
 
+\subsubsection*{Symbol}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{writeup//figures/inv_sym.png}
+    \caption{Enter Caption}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{writeup//figures/mux_w0_opt.png}
+    \caption{Enter Caption}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{writeup//figures/mux_w0_opt_sym.png}
+    \caption{Enter Caption}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{writeup//figures/mux_w1_opt.png}
+    \caption{Enter Caption}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{writeup//figures/mux_w1_opt_sym.png}
+    \caption{Enter Caption}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{writeup//figures/mux_w2_opt.png}
+    \caption{Enter Caption}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{writeup//figures/mux_w2_opt_sym.png}
+    \caption{Enter Caption}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{writeup//figures/mux_w3_opt.png}
+    \caption{Enter Caption}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{writeup//figures/mux_w3_opt_sym.png}
+    \caption{Enter Caption}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{writeup//figures/updated_delay_opt_LUTschem.png}
+    \caption{Enter Caption}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{writeup//figures/updated_delay_opt_LUTsym.png}
+    \caption{Enter Caption}
+\end{figure}
 
 
 \newpage
@@ -396,22 +468,51 @@ We set the period of the Vpulse to be 1/f, where f is a variable that represents
 % ------------------ SECTION 7 ------------------
 \section{Optimized Design Validation and Logical Test}
 \subsection{Test Schematic and Case}
+The muxes were designed the same way as the baseline design, but different variables were set for the widths of muxes in each stage. 
 
 
 
 \newpage
 
 \subsection{Simulation Results}
+\subsubsection*{2:1 MUX Subcircuit Validation}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{writeup//figures/muxsubval.png}
+    \caption{Enter Caption}
+\end{figure}
 
+The same subcircuit was used as the baseline. Widths were varied according to the stage, for optimization. In the subcircuit test, the select input \( S \) is toggled while \( I_0 \) and \( I_1 \) run as independent square waves. 
+Whenever \( S \) is high, the output waveform overlays \( I_1 \) with only a small propagation delay; whenever \( S \) is low, the output overlays \( I_0 \). 
+Each handoff can be observed at the transitions of \( S \): during every \( S=1 \) interval the output \( V_{\text{out}} \) matches \( I_1 \), and during every \( S=0 \) interval it matches \( I_0 \). 
+This behavior corresponds to the expected logic equation 
+\[
+V_{\text{out}} = S \cdot I_1 + \overline{S} \cdot I_0
+\]
+for a 2:1 pass-gate multiplexer. 
+The simulation therefore verifies that the subcircuit operates correctly.
 
+\subsubsection*{16:1 LUT Validation}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{writeup//figures/lut_opt_validation_sim_updated.png}
+    \caption{Enter Caption}
+\end{figure}
+The overall test schematic was the same for optimized compared to baseline, except the widths changed for each stage, based on a parametric sweep. After inputting the widths found from the sweep (see optimized delay measurement section), the following validation results were obtained.  For the full 16:1 LUT, all sixteen input combinations (\(2^4\)) were simulated by varying the four address lines from \(0000\) through \(1111\). 
+In each address state, the output \(V_{\text{out}}\) aligns with exactly one corresponding data input. 
+Specifically, when the address equals \(0000\), \(\text{IN}_0\) propagates to the output; as the address increments, \(\text{IN}_1, \text{IN}_2, \ldots, \text{IN}_{15}\) sequentially drive the output. 
+Rising and falling edges on \(V_{\text{out}}\) coincide precisely with the selected input, while nonselected inputs show no coupling. 
+Because all address combinations were verified and the output correctly reflected the selected data input each time, the 16:1 LUT simulation confirms correct functionality.
 
 \newpage
-
 % ------------------ SECTION 8 ------------------
 \section{Optimized Delay Measurement}
-\subsection{Schematics}
-
 \subsubsection{Test Schematic}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{writeup//figures/updated_delay_opt_testschem.png}
+    \caption{Enter Caption}
+\end{figure}
 
 \newpage
 
@@ -543,7 +644,7 @@ Hence, the optimized LUT demonstrates nearly an order of magnitude reduction in 
 
 \subsection{Simulation Results and Metric Value}
 
-\begin{figure}
+\begin{figure}[H]
     \centering
     \includegraphics[width=0.5\linewidth]{writeup//figures/max_frequencies_optimized.png}
     \caption{Enter Caption}
@@ -557,6 +658,11 @@ Hence, the optimized LUT demonstrates nearly an order of magnitude reduction in 
 \section{Optimized Energy Measurement}
 \subsection{Test Schematic}
 
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{writeup//figures/updated_energy_opt_testchem.png}
+    \caption{Enter Caption}
+\end{figure}
 
 
 \newpage
