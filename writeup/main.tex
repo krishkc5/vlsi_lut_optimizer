@@ -415,7 +415,61 @@ We set the period of the Vpulse to be 1/f, where f is a variable that represents
 
 \newpage
 
-\subsection{Test Case}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{writeup//figures/wmux_all_parametric_sweep_setup.png}
+    \caption{Enter Caption}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\linewidth]{writeup//figures/wmux_all_zoomed_parametrics_weep2.png}
+    \caption{Enter Caption}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=1\linewidth]{writeup//figures/wmux_3_parametric_sweep_setup.png}
+    \caption{Enter Caption}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{writeup//figures/wmux_3_parametrics_weep.png}
+    \caption{Enter Caption}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{writeup//figures/wmux_2_parametric_sweep_setup.png}
+    \caption{Enter Caption}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{writeup//figures/wmux_2_parametrics_weep.png}
+    \caption{Enter Caption}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{writeup//figures/wmux_1_parametric_sweep_setup.png}
+    \caption{Enter Caption}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{writeup//figures/wmux_1_parametrics_weep.png}
+    \caption{Enter Caption}
+\end{figure}
+
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{writeup//figures/wmux_1_parametric_sweep_setup.png}
+    \caption{Enter Caption}
+\end{figure}
+
 
 
 
@@ -425,50 +479,56 @@ We set the period of the Vpulse to be 1/f, where f is a variable that represents
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.5\linewidth]{writeup//figures/optimized_delay_transient.png}
+    \includegraphics[width=\linewidth]{writeup//figures/optimized_delay_ADEL_setup.png}
     \caption{Enter Caption}
 \end{figure}
 
-\subsection*{Propagation Delay (from waveform markers)}
-
-All delays are measured at the 50\% level (\(0.6\,\text{V}\) for \(V_{DD}=1.2\,\text{V}\)).
-
-\paragraph{Measured 50\% crossing times}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{writeup//figures/updated_delay_opt.png}
+    \caption{Enter Caption}
+\end{figure}
+From the transient response, the measured $50\%$ crossing times are
 \[
-t_{\text{in,50\%}\downarrow}=4.04143~\text{ns}, \qquad
-t_{\text{out,50\%}\uparrow}=4.59684~\text{ns}
+t_{\text{in},50\%\downarrow} = 4.119~\text{ns}, \quad
+t_{\text{out},50\%\uparrow} = 4.272~\text{ns}, \quad
+t_{\text{in},50\%\uparrow} = 8.115~\text{ns}, \quad
+t_{\text{out},50\%\downarrow} = 8.196~\text{ns}.
+\]
+The propagation delays are therefore
+\[
+t_{PLH} = t_{\text{out},50\%\uparrow} - t_{\text{in},50\%\downarrow}
+        = 4.272~\text{ns} - 4.119~\text{ns}
+        = \boxed{0.153~\text{ns}},
 \]
 \[
-t_{\text{in,50\%}\uparrow}=8.03585~\text{ns}, \qquad
-t_{\text{out,50\%}\downarrow}=8.19713~\text{ns}
+t_{PHL} = t_{\text{out},50\%\downarrow} - t_{\text{in},50\%\uparrow}
+        = 8.196~\text{ns} - 8.115~\text{ns}
+        = \boxed{0.081~\text{ns}}.
 \]
-
-\paragraph{Low-to-High propagation delay (\(t_{PLH}\))}
+The average propagation delay is
 \[
-t_{PLH}=t_{\text{out,50\%}\uparrow}-t_{\text{in,50\%}\downarrow}
-      =4.59684-4.04143
-      =\boxed{0.55541~\text{ns}}
+t_P = \frac{t_{PLH} + t_{PHL}}{2}
+     = \frac{0.153 + 0.081}{2}
+     = \boxed{0.117~\text{ns}}.
 \]
-
-\paragraph{High-to-Low propagation delay (\(t_{PHL}\))}
+The percentage deviation of each transition from the average is
 \[
-t_{PHL}=t_{\text{out,50\%}\downarrow}-t_{\text{in,50\%}\uparrow}
-      =8.19713-8.03585
-      =\boxed{0.16128~\text{ns}}
+\frac{t_{PLH} - t_P}{t_P} \times 100 = \boxed{+30.8\%}, 
+\qquad
+\frac{t_{PHL} - t_P}{t_P} \times 100 = \boxed{-30.8\%}.
 \]
-
-\paragraph{Average propagation delay}
+Comparing against the baseline LUT delay of $t_{P,\text{baseline}} = 0.8275~\text{ns}$, the delay-optimized LUT exhibits a significant improvement:
 \[
-t_p=\frac{t_{PLH}+t_{PHL}}{2}
-   =\frac{0.55541+0.16128}{2}
-   =\boxed{0.35835~\text{ns}}
+\text{Speedup} 
+= \frac{t_{P,\text{baseline}} - t_P}{t_{P,\text{baseline}}} \times 100
+= \frac{0.8275 - 0.117}{0.8275} \times 100
+= \boxed{85.9\%~\text{faster}}.
 \]
+Hence, the optimized LUT demonstrates nearly an order of magnitude reduction in propagation delay, indicating a substantial timing enhancement while maintaining consistent rise–fall symmetry.
 
-\paragraph{Worst-case delay}
-\[
-t_{pd,\text{worst}}=\max\{t_{PLH},t_{PHL}\}=\boxed{0.55541~\text{ns}}
-\]
-The rising-output path (\(t_{PLH}\)) dominates, so the PMOS pull-up path is the timing bottleneck for this configuration.
+
+
 
 
 \newpage
@@ -488,6 +548,8 @@ The rising-output path (\(t_{PLH}\)) dominates, so the PMOS pull-up path is the 
     \includegraphics[width=0.5\linewidth]{writeup//figures/max_frequencies_optimized.png}
     \caption{Enter Caption}
 \end{figure}
+
+
 
 \newpage
 
@@ -512,7 +574,6 @@ The rising-output path (\(t_{PLH}\)) dominates, so the PMOS pull-up path is the 
     \includegraphics[width=0.5\linewidth]{writeup//figures/optimized_energy_val.png}
     \caption{Enter Caption}
 \end{figure}
-
 \newpage
 
 % ------------------ SECTION 11 ------------------
